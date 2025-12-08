@@ -1,34 +1,53 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MainTabNavigator from "@/navigation/MainTabNavigator";
-import ModalScreen from "@/screens/ModalScreen";
 import { useScreenOptions } from "@/hooks/useScreenOptions";
+import { useApp } from "@/context/AppContext";
+
+import RoleSelectScreen from "@/screens/RoleSelectScreen";
+import OperatorStackNavigator from "@/navigation/OperatorStackNavigator";
+import FarmerStackNavigator from "@/navigation/FarmerStackNavigator";
+import OwnerStackNavigator from "@/navigation/OwnerStackNavigator";
 
 export type RootStackParamList = {
-  Main: undefined;
-  Modal: undefined;
+  RoleSelect: undefined;
+  OperatorStack: undefined;
+  FarmerStack: undefined;
+  OwnerStack: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStackNavigator() {
   const screenOptions = useScreenOptions();
+  const { currentRole } = useApp();
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen
-        name="Main"
-        component={MainTabNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Modal"
-        component={ModalScreen}
-        options={{
-          presentation: "modal",
-          headerTitle: "Modal",
-        }}
-      />
+      {currentRole === null ? (
+        <Stack.Screen
+          name="RoleSelect"
+          component={RoleSelectScreen}
+          options={{ headerShown: false }}
+        />
+      ) : currentRole === "operator" ? (
+        <Stack.Screen
+          name="OperatorStack"
+          component={OperatorStackNavigator}
+          options={{ headerShown: false }}
+        />
+      ) : currentRole === "farmer" ? (
+        <Stack.Screen
+          name="FarmerStack"
+          component={FarmerStackNavigator}
+          options={{ headerShown: false }}
+        />
+      ) : (
+        <Stack.Screen
+          name="OwnerStack"
+          component={OwnerStackNavigator}
+          options={{ headerShown: false }}
+        />
+      )}
     </Stack.Navigator>
   );
 }
