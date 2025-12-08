@@ -1,0 +1,275 @@
+You are an expert React Native UI developer.
+
+Build ONLY the FRONTEND UI (no backend, no real API integration) for a React Native (Expo) mobile app called:
+
+“Agricultural Machinery Work Monitoring & Wage Transparency System”
+
+The purpose of the app UI:
+- Reduce disputes between Farmer, Machine Owner, and Machine Operator
+- Show clear job summaries and wage calculations in a simple, transparent way
+
+IMPORTANT:
+- Focus ONLY on UI, navigation, layout, and dummy data.
+- Use hardcoded mock data or simple in-memory state.
+- Do NOT implement real API calls, authentication logic, or backend.
+- You can fake async calls with timeouts or simple promises if needed.
+
+====================================
+1. GENERAL UI REQUIREMENTS
+====================================
+
+- Use React Native with functional components and hooks.
+- Use Expo.
+- Use React Navigation (stack + bottom tabs where needed).
+- Beautiful, simple, and clean UI.
+- Mobile-first, large touch targets, readable outdoors.
+- Color theme:
+  - Primary: green or blue (agri/tech feel)
+  - Neutral background: light grey / off-white
+- Typography: clear visual hierarchy (titles, subtitles, body).
+
+Use any basic UI styling approach:
+- StyleSheet, or
+- Tailwind RN, or
+- Simple UI library like React Native Paper (optional).
+
+====================================
+2. ROLES & FLOW (UI ONLY)
+====================================
+
+There are 3 roles:
+- Farmer
+- Machine Owner
+- Machine Operator
+
+You do NOT need real auth.
+Instead, build a simple Role Selection & Mock Login UI:
+
+Screens:
+1. RoleSelectScreen
+   - App logo and title.
+   - Three big role buttons: "Farmer", "Owner", "Operator".
+   - When user taps a role, navigate to a simple "Mock Login" or directly to that role's home screen.
+
+2. MockLoginScreen (optional)
+   - Fields: Name, Phone (no validation needed).
+   - A "Continue" button that navigates to the corresponding role’s home screen.
+   - Can be skipped – role selection can go directly to home.
+
+====================================
+3. OPERATOR UI SCREENS (UI ONLY)
+====================================
+
+Operator is the machine driver.
+
+3.1 OperatorHomeScreen
+- Header: "Hi, [Operator Name]" (use mock name).
+- Stats section (3 small cards):
+  - "Jobs Today"
+  - "Completed"
+  - "Pending"
+- List: "Today’s Jobs"
+  - Use FlatList with mock job data.
+  - Each job item shows:
+    - Field name (e.g., "Field A - Village X")
+    - Machine name (e.g., "Tractor #1")
+    - Status badge (Not Started / In Progress / Completed)
+    - Estimated wage (e.g., "₹ 1200")
+  - Tapping a job navigates to OperatorJobDetailScreen.
+- Floating button or footer button: "View Wage Summary"
+
+3.2 OperatorJobDetailScreen
+- Show job info (mock data):
+  - Job ID
+  - Field name
+  - Machine name
+  - Farmer name
+- Show a simple “Work Summary” card with static values:
+  - Distance covered (e.g., 3.4 km)
+  - Engine hours (e.g., 2.8 h)
+  - Fuel used (e.g., 4.2 L) – optional
+- Status chip: “Not Started” / “In Progress” / “Completed”
+- Buttons (UI only, update local UI state):
+  - Start Job
+  - End Job
+- When button is pressed, change status label and maybe show a Toast/snackbar: “Job started” / “Job completed”. No backend required.
+
+3.3 OperatorWageSummaryScreen
+- List of past jobs with mock data:
+  - Job name, Date, Net wage, Status (Approved / Pending / Disputed)
+- On tapping a job → OperatorWageDetailScreen.
+
+3.4 OperatorWageDetailScreen
+- Show:
+  - Work summary: distance, hours (mock numbers)
+  - Wage formula: e.g., "₹ 200 per hour × 5.0 hours"
+  - Gross wage
+  - Status: Approved / Pending / Disputed
+- Use clear layout: cards, titles, labels, values.
+
+====================================
+4. FARMER UI SCREENS (UI ONLY)
+====================================
+
+Farmer sees work done on their fields and approves/disputes wages.
+
+4.1 FarmerHomeScreen
+- Header: "Welcome, Farmer"
+- Stats cards:
+  - Jobs this week
+  - Total wage to pay
+  - Machines used
+- List: "Recent Jobs on My Fields"
+  - Job item shows:
+    - Field name
+    - Machine name
+    - Operator name
+    - Date
+    - Status: Awaiting Approval / Approved / Disputed
+  - On tap → FarmerJobDetailScreen.
+
+4.2 FarmerJobDetailScreen
+- Top section: Job info
+  - Field
+  - Machine
+  - Operator
+  - Date
+- Work Summary card (mock values):
+  - Distance
+  - Engine hours
+  - Estimated area
+- Wage Summary card:
+  - Rate type: per hour / per distance (text)
+  - Rate value
+  - Calculated wage amount
+- Two buttons:
+  - "Approve Job & Wage"
+  - "Raise Dispute"
+- On "Approve" → show success UI change (e.g., status text = Approved, button disabled).
+- On "Raise Dispute" → open a modal with:
+  - Reason dropdown (distance incorrect, area incorrect, etc.) – static options
+  - Text input for comments
+  - “Submit” button → just close modal and change status visually to Disputed.
+
+4.3 FarmerJobHistoryScreen
+- A simple tab or button from home.
+- List of all jobs with filters at top (just UI – no logic needed):
+  - Filter pill buttons: "All", "Approved", "Pending", "Disputed" (no real filtering required, can be local state).
+- Each job item shows field, machine, date, wage, status.
+
+====================================
+5. OWNER UI SCREENS (UI ONLY)
+====================================
+
+Owner sees machine utilization & operator wages.
+
+5.1 OwnerHomeScreen
+- Header: “Owner Dashboard”
+- Stats cards:
+  - Active machines
+  - Jobs today
+  - Total wage (week)
+- Section: “My Machines”
+  - FlatList of machine cards:
+    - Machine name
+    - Type (Tractor, Harvester)
+    - Status: Active / Idle / Offline (dummy)
+  - On tap → MachineDetailScreen.
+- Button: “View All Jobs”
+
+5.2 MachineDetailScreen
+- Show machine info (mock):
+  - Name, ID, type
+- Tabs or segmented control for:
+  - Jobs
+  - Usage
+  - Maintenance
+- Jobs tab:
+  - FlatList of jobs for that machine.
+- Usage tab:
+  - Show a simple static “chart-like” UI with bars made using View width percentages (no real charts library needed).
+- Maintenance tab:
+  - Next service due (e.g., “In 30 engine hours”)
+  - List of past services (static list items).
+
+5.3 OwnerJobsScreen
+- List of all jobs related to the owner’s machines.
+- Each job card:
+  - Field, Machine, Operator
+  - Status
+  - Wage amount
+  - Small label if farmer approved or not (e.g., "Farmer: Approved / Pending").
+- Buttons or toggles can visually change "Wage Paid" state (local state only).
+
+====================================
+6. NAVIGATION STRUCTURE
+====================================
+
+Use React Navigation:
+
+- Root Stack:
+  - RoleSelectScreen
+  - (Optional) MockLoginScreen
+  - OperatorStack
+  - FarmerStack
+  - OwnerStack
+
+Each role stack:
+- OperatorStack:
+  - OperatorHomeScreen
+  - OperatorJobDetailScreen
+  - OperatorWageSummaryScreen
+  - OperatorWageDetailScreen
+
+- FarmerStack:
+  - FarmerHomeScreen
+  - FarmerJobDetailScreen
+  - FarmerJobHistoryScreen
+
+- OwnerStack:
+  - OwnerHomeScreen
+  - MachineDetailScreen
+  - OwnerJobsScreen
+
+You may optionally use a BottomTabNavigator inside each role for:
+- Home
+- Jobs
+- Profile
+
+====================================
+7. DATA & STATE (UI ONLY)
+====================================
+
+- Use hardcoded mock data objects/arrays for:
+  - Users
+  - Jobs
+  - Machines
+  - Wages
+  - Summaries
+- Store them in a simple `data.js` file or local state.
+- No API calls.
+- No async storage required (unless you want to simulate).
+
+====================================
+8. DESIGN & POLISH
+====================================
+
+- Use Card-like components for jobs, machines, summaries.
+- Use small colored badges for statuses:
+  - Green: Approved / Active
+  - Yellow: Pending
+  - Red: Disputed / Offline
+- Use icons where meaningful (e.g., machine icon, clock, rupee symbol).
+- Show loading placeholders or skeletons only visually (e.g., “Loading…” text) if you simulate any delay.
+
+====================================
+9. GOAL
+====================================
+
+Deliver a complete, navigable, React Native UI that:
+- Looks consistent and professional.
+- Demonstrates the full flow for all three roles with dummy data.
+- Shows how dispute reduction and wage transparency would look in the final product.
+
+Remember: NO real backend, NO real auth, NO actual API integration.
+Everything can be mocked in the frontend.
