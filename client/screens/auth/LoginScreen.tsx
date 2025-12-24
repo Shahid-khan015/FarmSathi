@@ -14,7 +14,9 @@ import { ThemedView } from "@/components/ThemedView";
 import TextInput from "@/components/TextInput";
 import { Button } from "@/components/Button";
 import { useTheme } from "@/hooks/useTheme";
+import { useApp } from "@/context/AppContext";
 import { AuthStackParamList } from "@/navigation/AuthStackNavigator";
+import { mockLogin, getDummyCredentials } from "@/lib/mockAuth";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
 
@@ -51,6 +53,8 @@ export default function LoginScreen({ navigation }: Props) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const { setCurrentUser, setCurrentRole } = useApp() || {};
+
   const handleLogin = async () => {
     if (!validateInputs()) {
       return;
@@ -59,10 +63,21 @@ export default function LoginScreen({ navigation }: Props) {
     setLoading(true);
     try {
       // Simulate API call with delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Mock success - navigate to Home
-      navigation.navigate("Home", { userName: "User" });
+      // Mock authentication
+      const response = mockLogin({ phone, password });
+
+      if (response.success && response.user) {
+        // Set user and role in app context
+        setCurrentUser(response.user);
+        setCurrentRole(response.user.role);
+        
+        // Navigate to role selection screen
+        navigation.navigate("RoleSelect");
+      } else {
+        Alert.alert("Login Failed", response.error || "Invalid credentials");
+      }
     } catch (error) {
       Alert.alert("Login Failed", "An error occurred during login. Please try again.");
     } finally {
@@ -143,6 +158,15 @@ export default function LoginScreen({ navigation }: Props) {
                 Register here
               </ThemedText>
             </ThemedText>
+
+            <View style={styles.demoContainer}>
+              <ThemedText style={styles.demoTitle}>Demo Credentials</ThemedText>
+              {getDummyCredentials().map((cred) => (
+                <ThemedText key={cred.phone} style={styles.demoText}>
+                  {cred.role}: {cred.phone} / {cred.password}
+                </ThemedText>
+              ))}
+            </View>
           </View>
         </ThemedView>
       </ScrollView>
@@ -192,11 +216,29 @@ const styles = StyleSheet.create({
   footer: {
     alignItems: "center",
     marginTop: 16,
+    gap: 16,
   },
   footerText: {
     fontSize: 14,
   },
   link: {
     fontWeight: "600",
+  },
+  demoContainer: {
+    backgroundColor: "rgba(46, 125, 50, 0.1)",
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 8,
+    width: "100%",
+  },
+  demoTitle: {
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  demoText: {
+    fontSize: 11,
+    opacity: 0.7,
+    marginBottom: 4,
   },
 });

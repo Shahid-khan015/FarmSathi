@@ -21,23 +21,24 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStackNavigator() {
   const screenOptions = useScreenOptions();
-  const { currentRole } = useApp();
+  const { currentRole, currentUser } = useApp();
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      {currentRole === null ? (
+      {!currentUser ? (
         <>
           <Stack.Screen
             name="Auth"
             component={AuthStackNavigator}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="RoleSelect"
-            component={RoleSelectScreen}
-            options={{ headerShown: false }}
-          />
         </>
+      ) : currentRole === null ? (
+        <Stack.Screen
+          name="RoleSelect"
+          component={RoleSelectScreen}
+          options={{ headerShown: false }}
+        />
       ) : currentRole === "operator" ? (
         <Stack.Screen
           name="OperatorStack"
