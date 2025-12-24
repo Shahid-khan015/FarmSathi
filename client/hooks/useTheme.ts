@@ -9,5 +9,12 @@ export function useTheme() {
   return {
     theme,
     isDark,
+    colors: {
+      ...theme,
+      danger: theme.statusDisputed,
+      inputBg: theme.backgroundSecondary,
+      card: theme.backgroundSecondary,
+      muted: theme.textSecondary,
+    },
   };
 }
